@@ -1,74 +1,55 @@
 namespace ListaDeCompras.ConsoleApp.Compartilhado;
 
-public abstract class RepositorioBase
+public abstract class RepositorioBase<T> where T : EntidadeBase // constraint / restrição
 {
-    protected EntidadeBase?[] registros = new EntidadeBase[100];
+    protected List<T> registros = new List<T>();
 
-    public void Cadastrar(EntidadeBase entidade)
+    public void Cadastrar(T entidade)
     {
-        for (int i = 0; i < registros.Length; i++)
-        {
-            if (registros[i] == null)
-            {
-                registros[i] = entidade;
-                break;
-            }
-        }
+        registros.Add(entidade);
     }
 
-    public bool Editar(string idSelecionado, EntidadeBase entidade)
+    public bool Editar(string idSelecionado, T entidadeAtualizada)
     {
-        EntidadeBase? entidadeSelecionada = SelecionarPorId(idSelecionado);
+        T? registroSelecionado = SelecionarPorId(idSelecionado);
 
-        if (entidadeSelecionada == null)
+        if (registroSelecionado == null)
             return false;
 
-        entidadeSelecionada.AtualizarRegistro(entidade);
+        registroSelecionado.AtualizarDados(entidadeAtualizada);
 
         return true;
     }
 
+    public bool Excluir(T registro)
+    {
+        return registros.Remove(registro);
+    }
+
     public bool Excluir(string idSelecionado)
     {
-        for (int i = 0; i < registros.Length; i++)
-        {
-            EntidadeBase? c = registros[i];
+        T? registroSelecionado = SelecionarPorId(idSelecionado);
 
-            if (c == null)
-                continue;
+        if (registroSelecionado == null)
+            return false;
 
-            if (c.Id == idSelecionado)
-            {
-                registros[i] = null;
-                return true;
-            }
-        }
+        registros.Remove(registroSelecionado);
 
-        return false;
+        return true;
     }
 
-    public EntidadeBase? SelecionarPorId(string idSelecionado)
+    public T? SelecionarPorId(string idSelecionado)
     {
-        EntidadeBase? entidadeSelecionada = null;
-
-        for (int i = 0; i < registros.Length; i++)
+        foreach (T registro in registros)
         {
-            EntidadeBase? c = registros[i];
-
-            if (c == null)
-                continue;
-
-            if (c.Id == idSelecionado)
-            {
-                entidadeSelecionada = c;
-                break;
-            }
+            if (registro.Id == idSelecionado)
+                return registro;
         }
 
-        return entidadeSelecionada;
+        return null;
     }
 
-    public EntidadeBase?[] SelecionarTodos()
+    public List<T> SelecionarTodos()
     {
         return registros;
     }
