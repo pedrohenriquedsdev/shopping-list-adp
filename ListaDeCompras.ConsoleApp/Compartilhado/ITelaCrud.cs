@@ -1,6 +1,9 @@
 namespace ListaDeCompras.ConsoleApp.Compartilhado;
 
-public interface ITela // é um conceito totalmente abstrato
+public interface ITelaCrud
 {
-    string? ObterOpcaoMenu(); // toda classe que implementa essa interface precisa implementar esse método
+    void Cadastrar();
+    void Editar();
+    void Excluir();
+    void VisualizarTodos(bool deveExibirCabecalho);
 }
